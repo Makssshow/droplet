@@ -11,14 +11,24 @@ body {
 }
 
 .video {
+  position: relative;
   width: 100%;
   height: 100vh;
-  -o-object-fit: cover;
-     object-fit: cover;
   z-index: -1;
+  overflow: hidden;
+}
+
+.video canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  min-width: 100vw;
+  max-height: 100vh;
 }
 
 .end {
-  height: 300vh;
+  height: 600vh;
 }
 /*# sourceMappingURL=style.css.map */

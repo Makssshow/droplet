@@ -5,18 +5,27 @@ body {
 }
 
 .droplet {
-    text-align: center;
-    width: 100%;
-    height: 100vh;
+  text-align: center;
+  width: 100%;
+  height: 100vh;
 }
 
 .video {
-    width: 100%;
-    height: 100vh;
-    object-fit: cover;
-    z-index: -1;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100vw;
+    max-height: 100vh;
+  }
 }
 
 .end {
-    height: 300vh;
+  height: 600vh;
 }

@@ -1,25 +1,4 @@
 
-const video = document.querySelector(".video");
-let src = video.currentSrc || video.src;
-
-/* Make sure the video is 'activated' on iOS */
-function once(el, event, fn, opts) {
-  var onceFn = function (e) {
-    el.removeEventListener(event, onceFn);
-    fn.apply(this, arguments);
-  };
-  el.addEventListener(event, onceFn, opts);
-  return onceFn;
-}
-
-once(document.documentElement, "touchstart", function (e) {
-  video.play();
-  video.pause();
-});
-
-/* ---------------------------------- */
-/* Scroll Control! */
-
 gsap.registerPlugin(ScrollTrigger);
 
 gsap.to(".droplet img", {
@@ -30,7 +9,6 @@ gsap.to(".droplet img", {
         end: "bottom top",
         pin: true,
         pinSpacing: false,
-        markers: true,
         scrub: true,
         onLeave: () => {
             $(".droplet").css("opacity", "0");
@@ -43,49 +21,53 @@ gsap.to(".droplet img", {
 
 
 
-let tl = gsap.timeline({
-  defaults: { duration: 1, ease: Linear.easeNone, },
+
+
+console.clear();
+
+const canvas = document.querySelector(".video canvas");
+const context = canvas.getContext("2d");
+
+canvas.width = 1920;
+canvas.height = 1080;
+
+const frameCount = 711;
+const currentFrame = index => (
+  `assets/3/Untitled design(1)_1 ${(index + 1).toString().padStart(3, '0')}.jpg`
+);
+
+const images = []
+const airpods = {
+  frame: 0
+};
+
+for (let i = 0; i < frameCount; i++) {
+  const img = new Image();
+  img.src = currentFrame(i);
+  images.push(img);
+}
+
+gsap.to(airpods, {
+  frame: frameCount - 1,
+  snap: "frame",
   scrollTrigger: {
     trigger: ".video",
     start: "top top",
     endTrigger: ".end",
     end: "bottom bottom",
-    pin: true,
+    pin: ".video",
     pinSpacing: false,
-    scrub: true
-  }
+    markers: false,
+    scrub: 0.5,
+  },
+  markers: true,
+  onUpdate: render // use animation onUpdate instead of scrollTrigger's onUpdate
 });
 
-once(video, "loadedmetadata", () => {
-  tl.fromTo(
-    video,
-    {
-      currentTime: 0
-    },
-    {
-      currentTime: video.duration || 1
-    }
-  );
-});
+images[0].onload = render;
 
-/* When first coded, the Blobbing was important to ensure the browser wasn't dropping previously played segments, but it doesn't seem to be a problem now. Possibly based on memory availability? */
-setTimeout(function () {
-  if (window["fetch"]) {
-    fetch(src)
-      .then((response) => response.blob())
-      .then((response) => {
-        var blobURL = URL.createObjectURL(response);
+function render() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(images[airpods.frame], 0, 0); 
+}
 
-        var t = video.currentTime;
-        once(document.documentElement, "touchstart", function (e) {
-          video.play();
-          video.pause();
-        });
-
-        video.setAttribute("src", blobURL);
-        video.currentTime = t + 0.01;
-      });
-  }
-}, 1000);
-
-/* ---------------------------------- */
