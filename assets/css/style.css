@@ -5,9 +5,16 @@ body {
 }
 
 .droplet {
-  text-align: center;
-  width: 100%;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
   height: 100vh;
+  text-align: center;
+}
+
+.droplet img {
+  width: 70%;
 }
 
 .video {
